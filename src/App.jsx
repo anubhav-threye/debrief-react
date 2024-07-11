@@ -1,26 +1,17 @@
-import { useEffect } from "react";
-
-import { socket } from "@/socket";
 import { Viewer } from "@/components";
+import { SocketProvider, CesiumProvider } from "@/context";
 
 function App() {
-  // Socket connection lifecycle
-  useEffect(() => {
-    const onConnect = () => console.log("connected");
-    const onDisconnect = () => console.log("disconnected");
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-
-    // Socket connection cleanup
-    socket.off("connect", onConnect);
-    socket.off("disconnect", onDisconnect);
-  }, []);
-
   return (
-    <main className="min-h-screen w-full bg-neutral-800 text-neutral-300">
-      <Viewer />
-    </main>
+    <SocketProvider>
+      <CesiumProvider>
+        <main className="min-h-screen w-full bg-neutral-800 text-neutral-300">
+          <Viewer></Viewer>
+
+          <section className="w-full h-16">Bar</section>
+        </main>
+      </CesiumProvider>
+    </SocketProvider>
   );
 }
 
