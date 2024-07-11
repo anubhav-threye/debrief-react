@@ -6,19 +6,27 @@ import { ION_TOKEN } from "@/config";
 import { useCesium } from "@/context";
 
 // Memoized the viewer to stop frequent re-rendering
-export const Viewer = memo(({ children }) => {
+export const Viewer = ({ children }) => {
   const viewerRef = useRef(null);
-  const { setViewer } = useCesium();
+  const { viewer, setViewer } = useCesium();
 
   // Set default access token
   Ion.defaultAccessToken = ION_TOKEN;
 
   useEffect(() => {
+    const cesiumElement = viewerRef.current?.cesiumElement;
+
     // When the viewer is mounted store the reference.
-    if (viewerRef.current?.cesiumElement) {
-      setViewer(viewerRef.current.cesiumElement);
+    if (cesiumElement) {
+      setViewer(cesiumElement);
+
+      return () => {
+        viewer.entities.removeAll();
+        viewer.destroy();
+        setViewer(null);
+      };
     }
-  }, [viewerRef.current]);
+  }, [viewerRef]);
 
   return (
     <CesiumViewer
@@ -28,8 +36,21 @@ export const Viewer = memo(({ children }) => {
       infoBox={false}
       timeline={false}
       navigationHelpButton={false}
+      onViewerReady={(viewer) => {
+        viewer.camera.setView({
+          destination: Cartesian3.fromDegrees(
+            28.68580178978853,
+            77.20773279009244,
+            15000.0
+          ),
+          orientation: {
+            heading: CesiumMath.toRadians(0.0),
+            pitch: CesiumMath.toRadians(-15.0),
+          },
+        });
+      }}
     >
       {children}
     </CesiumViewer>
   );
-});
+};
