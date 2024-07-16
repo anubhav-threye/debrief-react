@@ -35,7 +35,7 @@ export const SocketProvider = ({ children }) => {
    */
   const handleMessage = (data) => {
     // Store the data into allData reference
-    allData.current.push(...data);
+    allData.current.push(data);
     // Trigger an state update to allow for reference update detection
     setUpdateFlag((prev) => !prev);
   };

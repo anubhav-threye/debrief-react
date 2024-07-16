@@ -1,14 +1,15 @@
-import { memo, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Ion } from "cesium";
-import { Viewer as CesiumViewer } from "resium";
+import { Viewer } from "resium";
 
 import { ION_TOKEN } from "@/config";
 import { useCesium } from "@/context";
+import { HOME_COORDINATE } from "@/constants";
 
 // Memoized the viewer to stop frequent re-rendering
-export const Viewer = ({ children }) => {
+export const ViewerSection = ({ children }) => {
   const viewerRef = useRef(null);
-  const { viewer, setViewer } = useCesium();
+  const { setViewer } = useCesium();
 
   // Set default access token
   Ion.defaultAccessToken = ION_TOKEN;
@@ -20,37 +21,26 @@ export const Viewer = ({ children }) => {
     if (cesiumElement) {
       setViewer(cesiumElement);
 
+      // Set the home view to a certain position (Gwalior Coords)
+      cesiumElement.camera.flyHome(0);
+      cesiumElement.camera.setView({ destination: HOME_COORDINATE });
+
       return () => {
-        viewer.entities.removeAll();
-        viewer.destroy();
         setViewer(null);
       };
     }
   }, [viewerRef]);
 
   return (
-    <CesiumViewer
+    <Viewer
       ref={viewerRef}
       className="w-full h-[calc(100vh_-_4rem)]"
       animation={false}
       infoBox={false}
       timeline={false}
       navigationHelpButton={false}
-      onViewerReady={(viewer) => {
-        viewer.camera.setView({
-          destination: Cartesian3.fromDegrees(
-            28.68580178978853,
-            77.20773279009244,
-            15000.0
-          ),
-          orientation: {
-            heading: CesiumMath.toRadians(0.0),
-            pitch: CesiumMath.toRadians(-15.0),
-          },
-        });
-      }}
     >
       {children}
-    </CesiumViewer>
+    </Viewer>
   );
 };
