@@ -1,7 +1,7 @@
 import { Cartesian3 } from "cesium";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { boxModel, entityLabel } from "@/utils";
+import { boxModel, entityLabel, formatData } from "@/utils";
 import {
   DEFAULT_LATITUDE,
   DEFAULT_LONGITUDE,
@@ -13,6 +13,10 @@ const CesiumContext = createContext({});
 export const CesiumProvider = ({ children }) => {
   const [viewer, setViewer] = useState(null);
   const [entities, setEntities] = useState({});
+
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [currentPosition, setCurrentPosition] = useState(0);
+  const [isLive, setIsLive] = useState(true);
 
   useEffect(() => {
     if (viewer) {
@@ -43,9 +47,37 @@ export const CesiumProvider = ({ children }) => {
     };
   };
 
+  const updateEntity = ({ rawEntity }) => {
+    if (!rawEntity) return;
+
+    // Transform the raw string data into usable object
+    const parsedEntity = formatData(rawEntity);
+    const previousEntity = entities?.[parsedEntity.id];
+
+    const entity = formatEntity({ entity: parsedEntity, previousEntity });
+
+    setEntities((prev) => ({
+      ...prev,
+      [entity.id]: entity,
+    }));
+  };
+
   return (
     <CesiumContext.Provider
-      value={{ viewer, setViewer, entities, setEntities, formatEntity }}
+      value={{
+        viewer,
+        setViewer,
+        entities,
+        setEntities,
+        formatEntity,
+        updateEntity,
+        isPlaying,
+        setIsPlaying,
+        currentPosition,
+        setCurrentPosition,
+        isLive,
+        setIsLive,
+      }}
     >
       {children}
     </CesiumContext.Provider>
