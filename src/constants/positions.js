@@ -5,3 +5,7 @@ export const HOME_COORDINATE = Cartesian3.fromDegrees(
   26.292537478492747,
   4500000
 );
+
+export const DEFAULT_LATITUDE = 23.0;
+export const DEFAULT_LONGITUDE = 74.0;
+export const DEFAULT_ALTITUDE = 4000;
