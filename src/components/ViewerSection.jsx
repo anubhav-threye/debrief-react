@@ -7,9 +7,9 @@ import { useCesium } from "@/context";
 import { HOME_COORDINATE } from "@/constants";
 
 // Memoized the viewer to stop frequent re-rendering
-export const ViewerSection = ({ children }) => {
+export const ViewerSection = ({ id, children }) => {
   const viewerRef = useRef(null);
-  const { setViewer } = useCesium();
+  const { setViewers } = useCesium();
 
   // Set default access token
   Ion.defaultAccessToken = ION_TOKEN;
@@ -19,14 +19,14 @@ export const ViewerSection = ({ children }) => {
 
     // When the viewer is mounted store the reference.
     if (cesiumElement) {
-      setViewer(cesiumElement);
+      setViewers((prev) => ({ ...prev, [id]: cesiumElement }));
 
       // Set the home view to a certain position (Gwalior Coords)
       cesiumElement.camera.flyHome(0);
       cesiumElement.camera.setView({ destination: HOME_COORDINATE });
 
       return () => {
-        setViewer(null);
+        setViewers((prev) => ({ ...prev, [id]: null }));
       };
     }
   }, [viewerRef]);

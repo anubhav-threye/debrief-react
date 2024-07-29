@@ -11,7 +11,7 @@ import {
 const CesiumContext = createContext({});
 
 export const CesiumProvider = ({ children }) => {
-  const [viewer, setViewer] = useState(null);
+  const [viewers, setViewers] = useState({});
   const [entities, setEntities] = useState({});
 
   const [isPlaying, setIsPlaying] = useState(true);
@@ -19,10 +19,10 @@ export const CesiumProvider = ({ children }) => {
   const [isLive, setIsLive] = useState(true);
 
   useEffect(() => {
-    if (viewer) {
-      console.log(viewer);
+    if (viewers) {
+      console.log(viewers);
     }
-  }, [viewer]);
+  }, [viewers]);
 
   const formatEntity = ({ entity, previousEntity = null }) => {
     // Convert the coordinate data into cartesian3 format
@@ -65,8 +65,8 @@ export const CesiumProvider = ({ children }) => {
   return (
     <CesiumContext.Provider
       value={{
-        viewer,
-        setViewer,
+        viewers,
+        setViewers,
         entities,
         setEntities,
         formatEntity,

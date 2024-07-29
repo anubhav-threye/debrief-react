@@ -3,7 +3,6 @@ import { Entity } from "resium";
 
 import { ViewerSection, PlayerSection } from "@/components";
 import { useCesium, useSocket } from "@/context";
-import { sleep } from "@/utils";
 
 export const Manager = () => {
   const { allData, updateFlag } = useSocket();
@@ -92,11 +91,22 @@ export const Manager = () => {
 
   return (
     <>
-      <ViewerSection>
-        {Object.values(entities).map((entity) => (
-          <Entity key={entity.id} {...entity} />
-        ))}
-      </ViewerSection>
+      <div className="grid grid-cols-2">
+        <section className="col-span-1">
+          <ViewerSection id="1">
+            {Object.values(entities).map((entity) => (
+              <Entity key={entity.id} {...entity} />
+            ))}
+          </ViewerSection>
+        </section>
+        <section className="col-span-1">
+          <ViewerSection id="2">
+            {Object.values(entities).map((entity) => (
+              <Entity key={entity.id} {...entity} />
+            ))}
+          </ViewerSection>
+        </section>
+      </div>
 
       <section className="w-full h-16">
         <PlayerSection
